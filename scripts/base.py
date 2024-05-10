@@ -565,7 +565,15 @@ def get_ssh_base_url():
 def git_update(repo, is_no_errors=False, is_current_dir=False, git_owner=""):
   print("[git] update: " + repo)
   owner = git_owner if git_owner else "ONLYOFFICE"
-<<<<<<< HEAD
+  unlimited_organization = "P-D-"
+  unlimited_tag_suffix = "-custom"
+  unlimited_modified_repos = ["server", "web-apps"]
+  if (repo in unlimited_modified_repos):
+    owner = unlimited_organization
+    branch_to_checkout = config.option("branch")
+  else:
+    branch_to_checkout = re.sub(unlimited_tag_suffix, '', config.option("branch"))
+
   url = git_get_base_url() + owner + "/" + repo + ".git"
   if git_is_ssh():
     url = get_ssh_base_url() + owner + "/" + repo + ".git"
@@ -582,7 +590,7 @@ def git_update(repo, is_no_errors=False, is_current_dir=False, git_owner=""):
   os.chdir(folder)
   cmd("git", ["fetch"], False if ("1" != config.option("update-light")) else True)
   if is_not_exit or ("1" != config.option("update-light")):
-    retCheckout = cmd("git", ["checkout", "-f", config.option("branch")], True)
+    retCheckout = cmd("git", ["checkout", "-f", branch_to_checkout], True)
     if (retCheckout != 0):
       print("branch does not exist...")
       print("switching to master...")
