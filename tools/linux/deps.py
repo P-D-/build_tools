@@ -48,8 +48,12 @@ def install_deps():
   for package in packages:
     base.cmd("sudo", ["apt-get", "install", "-y", package], True)
 
-  # nodejs
-  base.cmd("sudo", ["apt-get", "install", "-y", "nodejs"])
+# nodejs
+  base.cmd("sudo", ["apt-get", "install", "-y", "npm"])
+  # Install n to manage Node.js versions
+  base.cmd("sudo", ["npm", "install", "-g", "n"])
+  # Install Node.js 18 using n
+  base.cmd("sudo", ["n", "18"])
   nodejs_cur = 0
   try:
     nodejs_version = base.run_command('node -v')['stdout']
@@ -61,12 +65,10 @@ def install_deps():
     nodejs_cur = 1
   if (nodejs_cur < 16000):
     print("Node.js version cannot be less 16")
-    print("Reinstall")
-    base.run_as_bat(["curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - &&sudo apt-get install -y nodejs"])    
+    print("ERROR")
+    sys.exit(1)
   else:
     print("OK")
-    base.cmd("sudo", ["apt-get", "-y", "install", "npm", "yarn"], True)
-  base.cmd("sudo", ["npm", "install", "-g", "grunt-cli"])
   base.cmd("sudo", ["npm", "install", "-g", "@yao-pkg/pkg"])
 
   # java
